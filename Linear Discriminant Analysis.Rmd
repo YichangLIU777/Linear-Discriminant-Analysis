@@ -1,0 +1,54 @@
+---
+title: "Linear Discriminant Ananlysis "
+author: "Jeffrey Y.C. Lau"
+output: pdf_document
+---
+## 4.6.3 Linear Discriminant Ananlysis 
+## Code Chunk 1
+```{r}
+library(ISLR)
+attach(Smarket)
+train = (Year<2005)
+Smarket.2005 = Smarket[!train,]
+Direction.2005 = Direction[!train]
+```
+
+```{r}
+head(Smarket,5)
+```
+
+
+## Code Chunk 2
+```{r}
+library(MASS)
+lda.fit = lda(Direction~Lag1+Lag2,data=Smarket,subset = train)
+lda.fit
+```
+
+## Code Chunk 3
+```{r}
+lda.pred = predict(lda.fit, Smarket.2005)
+# length(lda.pred$class)
+names(lda.pred)
+#### class is the prediction of data in 2005, which contains (Up/Down)
+lda.class = lda.pred$class
+#### porterior is the detail which contains the probability of Up/Down
+lda.post = lda.pred$posterior
+#### lda.x: the scores of test cases on up to dimen discriminant variables
+lda.x = lda.pred$x
+```
+
+## Code Chunk 4
+```{r}
+table(lda.class,Direction.2005)
+mean(lda.class==Direction.2005)
+``` 
+
+## Code Chunk 5
+```{r}
+sum(lda.pred$posterior[,1]>=.5)
+sum(lda.pred$posterior[,1]<.5)
+lda.pred$posterior[1:12,1]
+lda.pred$posterior[1:12,2]
+lda.class[1:12]
+```
